@@ -1,13 +1,11 @@
 import PokemonGrid from "./PokemonGrid"
 import ResultCount from "./ResultCount"
+import { type PokemonListItem } from "../types"
+import { useEffect, useState } from "react";
 
 
 function Pokedex(){
-    const pokemons = [
-        {id:1, name:"Bulbasaur"},
-        {id:4, name:"Charmander"},
-        {id:7, name:"Squirtle"}
-    ]
+    const [pokemons, setPokemon] = useState<PokemonListItem[]>([])
 
     return (
     <>
