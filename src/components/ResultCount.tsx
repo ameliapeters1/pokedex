@@ -4,7 +4,7 @@ interface ResultCountProps {
 }
 
 
-function ResultCount({count, label="books"}: ResultCountProps){
+function ResultCount({count, label="pokemons"}: ResultCountProps){
     return(<p>{ count } {label}</p>)  
 }
 
