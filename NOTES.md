@@ -6,3 +6,7 @@ it is undefined - you have to write VITE_ first or it wont show
 it updates the server 
 3. Everything in import.meta.env ends up in the bundle sent to the browser. What can that never contain? Does it matter for the PokéAPI, and why would it matter for your own API?
 it can never contain confidential info. it doesnt matter for Pokemon since it is a public API already but in your own API there may be confidential information that you dont want to expose
+
+## TASK TWO
+- Write the fetch directly in the body of Pokedex, with a .then that sets state:Write down what you saw, and draw the loop in your notes: render, fetch, set state, and what?
+An infinite request loop was created.
