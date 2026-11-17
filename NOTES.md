@@ -13,3 +13,9 @@ An infinite request loop was created.
 
 ## TASK THREE
 1. With a non working endpoint you get the error: TypeError: Cannot read properties of undefined (reading 'map')
+
+## TASK FOUR
+- in the catch, reading err.message is a type error. Write down why a caught value is unknown
+ts allows us to throw anything and not just Error objects so it might not have a .message if it was say a string
+- Write down one case where displaying err.message is correct, and what makes it different.
+messages for developers since they need to know precise details to debug

@@ -14,40 +14,54 @@ interface listResponse {
 
 function Pokedex(){
     const [pokemon, setPokemon] = useState<PokemonListItem[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [error, setError] = useState<string|null>(null)
 
     useEffect(() => { 
         const fetchPokemon = async () => { 
-        try {
-            const response = await fetch(import.meta.env.VITE_API_URL + "/pokemon?limit=20")
-            
-            if (!response.ok) {
-                throw new Error(`Could not load Pokémon (${response.status})`)
+            setIsLoading(true)
+            setError(null)
+            try {
+                const response = await fetch(import.meta.env.VITE_API_URL + "/pokemon?limit=20")
+                
+                if (!response.ok) {
+                    throw new Error(`Could not load Pokémon (${response.status})`)
+                }
+                
+                const data: listResponse = await response.json()
+                const pokemonList = data.results.map((pokemon: PokemonListItem) => (
+                    { ...pokemon, id: idFromUrl(pokemon.url)}))
+
+                setPokemon(pokemonList)
+
+            } catch (err) {
+                 if (err instanceof Error) {
+                    console.error("fetch failed: ", err.message)
+                    } 
+                setError("Could not load Pokémon. Please try again.")    
+            } finally{
+                setIsLoading(false)
             }
-            
-            const data: listResponse = await response.json()
-            const pokemonList = data.results.map((pokemon: PokemonListItem) => (
-                { ...pokemon, id: idFromUrl(pokemon.url)}))
-
-            setPokemon(pokemonList)
-
-        } catch (err) {
-            console.error("error!", err)      
-        } 
-        }
-        fetchPokemon()
+            }
+            fetchPokemon()
     }, [])
     
     return (
     <main className="page">
         <h1>Pokemons!</h1>
-        <ResultCount
-        count = {pokemon.length}
-        />
-        <PokemonGrid
-        pokemonCards={pokemon}/>
-    
-    </main>
-    
+
+        {isLoading ? (<p>loading Pokemon...</p>): 
+            error ? (<p>{error}</p>):
+                pokemon.length ===0? (<p>No pokemon found</p>):
+                (
+                <>
+                <ResultCount
+                count = {pokemon.length}/>
+                <PokemonGrid
+                pokemonCards={pokemon}/>
+                </>
+        )}  
+    </main> 
     )
 }
 
