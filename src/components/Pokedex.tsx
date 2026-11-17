@@ -31,15 +31,16 @@ function Pokedex(){
     }, [])
     
     return (
-    <>
+    <main className="page">
         <h1>Pokemons!</h1>
         <ResultCount
         count = {pokemon.length}
         />
         <PokemonGrid
         pokemonCards={pokemon}/>
-    </>
-       
+    
+    </main>
+    
     )
 }
 

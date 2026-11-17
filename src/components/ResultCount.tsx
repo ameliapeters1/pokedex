@@ -5,7 +5,7 @@ interface ResultCountProps {
 
 
 function ResultCount({count, label="pokemons"}: ResultCountProps){
-    return(<p>{ count } {label}</p>)  
+    return(<p className="result-count">{ count } {label}</p>)  
 }
 
 export default ResultCount

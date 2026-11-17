@@ -10,7 +10,7 @@ function PokemonCard(props:PokemonCardProps){
     const formattedId = `#${String(id).padStart(3, '0')}`;
 
     return(
-       <li>
+       <li className="pokemon-card">
             <h2>{formattedName}</h2>
             <p>{formattedId}</p>
             <img 

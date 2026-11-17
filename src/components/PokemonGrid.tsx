@@ -9,7 +9,7 @@ function PokemonGrid(props: PokemonGridProps){
     const {pokemonCards} = props
     
     return(
-        <ul>
+        <ul className="pokemon-grid">
              {pokemonCards.map((pokemonCard)=> 
                 (<PokemonCard 
                     key={pokemonCard.id}
