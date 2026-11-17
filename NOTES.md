@@ -10,3 +10,6 @@ it can never contain confidential info. it doesnt matter for Pokemon since it is
 ## TASK TWO
 - Write the fetch directly in the body of Pokedex, with a .then that sets state:Write down what you saw, and draw the loop in your notes: render, fetch, set state, and what?
 An infinite request loop was created.
+
+## TASK THREE
+1. With a non working endpoint you get the error: TypeError: Cannot read properties of undefined (reading 'map')

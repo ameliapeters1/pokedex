@@ -4,6 +4,13 @@ import { type PokemonListItem } from "../types"
 import { useEffect, useState } from "react";
 import { idFromUrl } from "../lib/pokemon";
 
+interface listResponse {
+    count: number; 
+    next: string | null; 
+    previous: string | null; 
+    results: PokemonListItem[] 
+}
+
 
 function Pokedex(){
     const [pokemon, setPokemon] = useState<PokemonListItem[]>([])
@@ -14,10 +21,10 @@ function Pokedex(){
             const response = await fetch(import.meta.env.VITE_API_URL + "/pokemon?limit=20")
             
             if (!response.ok) {
-                throw new Error("unable to fetch pokemon")
+                throw new Error(`Could not load Pokémon (${response.status})`)
             }
             
-            const data = await response.json()
+            const data: listResponse = await response.json()
             const pokemonList = data.results.map((pokemon: PokemonListItem) => (
                 { ...pokemon, id: idFromUrl(pokemon.url)}))
 
