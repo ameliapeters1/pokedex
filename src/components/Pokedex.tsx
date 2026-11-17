@@ -1,51 +1,11 @@
+import { usePokemonList } from "../hooks/usePokemonLists"
 import PokemonGrid from "./PokemonGrid"
 import ResultCount from "./ResultCount"
-import { type PokemonListItem } from "../types"
-import { useEffect, useState } from "react";
-import { idFromUrl } from "../lib/pokemon";
-
-interface listResponse {
-    count: number; 
-    next: string | null; 
-    previous: string | null; 
-    results: PokemonListItem[] 
-}
 
 
 function Pokedex(){
-    const [pokemon, setPokemon] = useState<PokemonListItem[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [error, setError] = useState<string|null>(null)
+    const {pokemon, isLoading, error} = usePokemonList()
 
-    useEffect(() => { 
-        const fetchPokemon = async () => { 
-            setIsLoading(true)
-            setError(null)
-            try {
-                const response = await fetch(import.meta.env.VITE_API_URL + "/pokemon?limit=20")
-                
-                if (!response.ok) {
-                    throw new Error(`Could not load Pokémon (${response.status})`)
-                }
-                
-                const data: listResponse = await response.json()
-                const pokemonList = data.results.map((pokemon: PokemonListItem) => (
-                    { ...pokemon, id: idFromUrl(pokemon.url)}))
-
-                setPokemon(pokemonList)
-
-            } catch (err) {
-                 if (err instanceof Error) {
-                    console.error("fetch failed: ", err.message)
-                    } 
-                setError("Could not load Pokémon. Please try again.")    
-            } finally{
-                setIsLoading(false)
-            }
-            }
-            fetchPokemon()
-    }, [])
-    
     return (
     <main className="page">
         <h1>Pokemons!</h1>
