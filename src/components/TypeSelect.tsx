@@ -1,0 +1,29 @@
+import { POKEMON_TYPES } from "../lib/pokemon";
+
+interface TypeSelectProps{
+    value: string;
+    onChange: (value:string)=> void;
+}
+
+function TypeSelect(props: TypeSelectProps){
+    const {value, onChange} = props
+
+    return(
+        <>
+        <label> Pokemon type: </label>
+          <select 
+          value={value}
+          onChange={(event)=>onChange(event.target.value)}>
+            <option value="">All types</option>
+
+            {POKEMON_TYPES.map((type)=>(
+            <option key = {type} value={type}>
+                {type}
+            </option>))}
+          </select>
+        </>
+    )
+
+}
+
+export default TypeSelect

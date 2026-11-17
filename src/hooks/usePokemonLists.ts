@@ -12,7 +12,7 @@ interface listResponse {
 
 
 
-export function usePokemonList() {
+export function usePokemonList(type:string) {
       // state, effect, cleanup
  
           const [pokemon, setPokemon] = useState<PokemonListItem[]>([])
@@ -22,18 +22,20 @@ export function usePokemonList() {
               const fetchPokemon = async () => { 
                   setIsLoading(true)
                   setError(null)
-                  try {
-                      const response = await fetch(import.meta.env.VITE_API_URL + "/pokemon?limit=20")
+                  try { 
+                    const endpoint = type.length === 0 ? "/pokemon?limit=20" : `/type/${type}`
+                
+                    const response = await fetch(import.meta.env.VITE_API_URL + endpoint)
                       
-                      if (!response.ok) {
+                    if (!response.ok) {
                           throw new Error(`Could not load Pokémon (${response.status})`)
-                      }
+                    }
                       
-                      const data: listResponse = await response.json()
-                      const pokemonList = data.results.map((pokemon: PokemonListItem) => (
-                          { ...pokemon, id: idFromUrl(pokemon.url)}))
-      
-                      setPokemon(pokemonList)
+                    const data: listResponse = await response.json()
+                    const pokemonList = data.results.map((pokemon: PokemonListItem) => (
+                        { ...pokemon, id: idFromUrl(pokemon.url)}))
+    
+                    setPokemon(pokemonList)
       
                   } catch (err) {
                        if (err instanceof Error) {
