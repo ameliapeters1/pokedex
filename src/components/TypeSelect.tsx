@@ -10,8 +10,9 @@ function TypeSelect(props: TypeSelectProps){
 
     return(
         <>
-        <label> Pokemon type: </label>
-          <select 
+        <label htmlFor="pokemon-type"> Pokemon type: </label>
+          <select
+          id={"pokemon-type"}
           value={value}
           onChange={(event)=>onChange(event.target.value)}>
             <option value="">All types</option>

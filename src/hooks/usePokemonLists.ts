@@ -10,18 +10,26 @@ interface listResponse {
     results: PokemonListItem[] 
 }
 
+interface typeResponse {
+    pokemon: { 
+        pokemon: { 
+            name:string
+            url:string } }[]
+}
 
 
 export function usePokemonList(type:string) {
       // state, effect, cleanup
- 
-          const [pokemon, setPokemon] = useState<PokemonListItem[]>([])
-          const [isLoading, setIsLoading] = useState<boolean>(true)
-          const [error, setError] = useState<string|null>(null)
+        const [total, setTotal] = useState<number>(0)
+        const [pokemon, setPokemon] = useState<PokemonListItem[]>([])
+        const [isLoading, setIsLoading] = useState<boolean>(true)
+        const [error, setError] = useState<string|null>(null)
+
           useEffect(() => { 
               const fetchPokemon = async () => { 
                   setIsLoading(true)
                   setError(null)
+
                   try { 
                     const endpoint = type.length === 0 ? "/pokemon?limit=20" : `/type/${type}`
                 
@@ -30,11 +38,21 @@ export function usePokemonList(type:string) {
                     if (!response.ok) {
                           throw new Error(`Could not load Pokémon (${response.status})`)
                     }
-                      
-                    const data: listResponse = await response.json()
-                    const pokemonList = data.results.map((pokemon: PokemonListItem) => (
+
+                    let pokemonList: PokemonListItem[]
+
+                    if (type.length ===0){
+                        const data: listResponse = await response.json()
+                        pokemonList = data.results.map((pokemon: PokemonListItem) => (
                         { ...pokemon, id: idFromUrl(pokemon.url)}))
-    
+                        setTotal(data.count)
+                    } else{
+                        const data: typeResponse = await response.json()
+                        pokemonList = data.pokemon.slice(0,24).map(({pokemon})=> ({...pokemon, id: idFromUrl(pokemon.url)}))
+                        setTotal(data.pokemon.length)
+                    }
+                      
+                    
                     setPokemon(pokemonList)
       
                   } catch (err) {
@@ -47,6 +65,7 @@ export function usePokemonList(type:string) {
                   }
                   }
                   fetchPokemon()
-          }, [])
-  return { pokemon, isLoading, error };
+          }, [type])
+          
+  return { pokemon, isLoading, error, total };
 }
