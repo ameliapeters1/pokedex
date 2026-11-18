@@ -1,8 +1,8 @@
-import Pokedex from "./components/Pokedex";
+import AppRoutes from "./AppRoutes";
 
 export function App(){
   return(
-    <Pokedex/>
+    <AppRoutes/>
   )
 }
 
