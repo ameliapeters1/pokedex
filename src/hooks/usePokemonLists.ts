@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import {type PokemonListItem } from "../types"
 import { idFromUrl } from "../lib/pokemon"
+import { apiGet } from "../api/client";
 
 
 interface listResponse {
@@ -39,24 +40,18 @@ export function usePokemonList(type:string) {
 
             try { 
                 const endpoint = type.length === 0 ? "/pokemon?limit=20" : `/type/${type}`
-            
-                const response = await fetch(import.meta.env.VITE_API_URL + endpoint, {signal})
-                    
-                if (!response.ok) {
-                        throw new Error(`Could not load Pokémon (${response.status})`)
-                }
 
                 let pokemonList: PokemonListItem[]
                 let total: number
                 
                 if (type.length ===0){
-                    const data: listResponse = await response.json()
+                    const data: listResponse = await apiGet(endpoint, signal)
                     pokemonList = data.results.map((pokemon: PokemonListItem) => (
                     { ...pokemon, id: idFromUrl(pokemon.url)}))
                     total = data.count
                     
                 } else{
-                    const data: typeResponse = await response.json()
+                    const data: typeResponse = await apiGet(endpoint, signal)
                     pokemonList = data.pokemon.slice(0,24).map(({pokemon})=> ({...pokemon, id: idFromUrl(pokemon.url)}))
                     total = data.pokemon.length
                 }
