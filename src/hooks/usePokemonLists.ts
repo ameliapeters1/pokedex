@@ -1,22 +1,6 @@
 import { useState, useEffect } from "react"
 import {type PokemonListItem } from "../types"
-import { idFromUrl } from "../lib/pokemon"
-import { apiGet } from "../api/client";
-
-
-interface listResponse {
-    count: number; 
-    next: string | null; 
-    previous: string | null; 
-    results: PokemonListItem[] 
-}
-
-interface typeResponse {
-    pokemon: { 
-        pokemon: { 
-            name:string
-            url:string } }[]
-}
+import { getPokemonList } from "../api/pokemon";
 
 
 export function usePokemonList(type:string) {
@@ -30,7 +14,6 @@ export function usePokemonList(type:string) {
           useEffect(() => { 
             // controller for cancelling outdated fetch requests
             const controller = new AbortController()
-            const {signal} = controller
             // ignore for preventing previous requests from updating state
             let ignore = false
 
@@ -39,26 +22,11 @@ export function usePokemonList(type:string) {
                 setError(null)
 
             try { 
-                const endpoint = type.length === 0 ? "/pokemon?limit=20" : `/type/${type}`
-
-                let pokemonList: PokemonListItem[]
-                let total: number
-                
-                if (type.length ===0){
-                    const data: listResponse = await apiGet(endpoint, signal)
-                    pokemonList = data.results.map((pokemon: PokemonListItem) => (
-                    { ...pokemon, id: idFromUrl(pokemon.url)}))
-                    total = data.count
-                    
-                } else{
-                    const data: typeResponse = await apiGet(endpoint, signal)
-                    pokemonList = data.pokemon.slice(0,24).map(({pokemon})=> ({...pokemon, id: idFromUrl(pokemon.url)}))
-                    total = data.pokemon.length
-                }
-
+                const data = await getPokemonList({type}, controller.signal)
+               
                 if (!ignore){
-                    setTotal(total)
-                    setPokemon(pokemonList)
+                    setTotal(data.total)
+                    setPokemon(data.pokemon)
                 }
                 
                 } catch (err) {
