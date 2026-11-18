@@ -25,47 +25,70 @@ export function usePokemonList(type:string) {
         const [isLoading, setIsLoading] = useState<boolean>(true)
         const [error, setError] = useState<string|null>(null)
 
+
           useEffect(() => { 
-              const fetchPokemon = async () => { 
-                  setIsLoading(true)
-                  setError(null)
+            // controller for cancelling outdated fetch requests
+            const controller = new AbortController()
+            const {signal} = controller
+            // ignore for preventing previous requests from updating state
+            let ignore = false
 
-                  try { 
-                    const endpoint = type.length === 0 ? "/pokemon?limit=20" : `/type/${type}`
-                
-                    const response = await fetch(import.meta.env.VITE_API_URL + endpoint)
-                      
-                    if (!response.ok) {
-                          throw new Error(`Could not load Pokémon (${response.status})`)
-                    }
+            const fetchPokemon = async () => {
+                setIsLoading(true)
+                setError(null)
 
-                    let pokemonList: PokemonListItem[]
-
-                    if (type.length ===0){
-                        const data: listResponse = await response.json()
-                        pokemonList = data.results.map((pokemon: PokemonListItem) => (
-                        { ...pokemon, id: idFromUrl(pokemon.url)}))
-                        setTotal(data.count)
-                    } else{
-                        const data: typeResponse = await response.json()
-                        pokemonList = data.pokemon.slice(0,24).map(({pokemon})=> ({...pokemon, id: idFromUrl(pokemon.url)}))
-                        setTotal(data.pokemon.length)
-                    }
-                      
+            try { 
+                const endpoint = type.length === 0 ? "/pokemon?limit=20" : `/type/${type}`
+            
+                const response = await fetch(import.meta.env.VITE_API_URL + endpoint, {signal})
                     
+                if (!response.ok) {
+                        throw new Error(`Could not load Pokémon (${response.status})`)
+                }
+
+                let pokemonList: PokemonListItem[]
+                let total: number
+                
+                if (type.length ===0){
+                    const data: listResponse = await response.json()
+                    pokemonList = data.results.map((pokemon: PokemonListItem) => (
+                    { ...pokemon, id: idFromUrl(pokemon.url)}))
+                    total = data.count
+                    
+                } else{
+                    const data: typeResponse = await response.json()
+                    pokemonList = data.pokemon.slice(0,24).map(({pokemon})=> ({...pokemon, id: idFromUrl(pokemon.url)}))
+                    total = data.pokemon.length
+                }
+
+                if (!ignore){
+                    setTotal(total)
                     setPokemon(pokemonList)
-      
-                  } catch (err) {
-                       if (err instanceof Error) {
-                          console.error("fetch failed: ", err.message)
-                          } 
-                      setError("Could not load Pokémon. Please try again.")    
-                  } finally{
-                      setIsLoading(false)
-                  }
-                  }
-                  fetchPokemon()
-          }, [type])
-          
+                }
+                
+                } catch (err) {
+                    if (err instanceof Error && err.name === "AbortError") {
+                        return
+                    }
+                    if (!ignore) {
+                        console.error("Fetch failed:", err)
+                        setError("Could not load Pokémon. Please try again.")
+                    }
+                } finally {
+                    if (!ignore) {
+                        setIsLoading(false)
+                    }
+                }
+               
+            }
+            fetchPokemon()
+
+            // cleanup function runs when type changes or component unmounts
+            return () => {
+                ignore = true
+                controller.abort()
+            }
+        }, [type])
+
   return { pokemon, isLoading, error, total };
 }
