@@ -1,12 +1,19 @@
 import { Route, Routes } from "react-router";
 import HomePage from "./pages/HomePage";
 import PokedexPage from "./pages/PokedexPage";
+import NotFoundPage from "./pages/NotFoundPage"
+import NavigationBar from "./components/NavigationBar";
 
 export default function AppRoutes() {
     return(
-        <Routes>
-            <Route index element={<HomePage />} />
-            <Route path="pokedex" element={<PokedexPage />} />
-        </Routes>
+        <>
+            <NavigationBar/>
+
+            <Routes>
+                <Route index element={<HomePage />} />
+                <Route path="pokedex" element={<PokedexPage />} />
+                <Route path = "/*" element={<NotFoundPage/>} />
+            </Routes>
+        </>
     )
 }

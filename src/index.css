@@ -198,3 +198,20 @@ h1::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+nav {
+  display: flex;
+  gap: 20px;
+  padding: 16px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+}
+
+.nav-link.active {
+  color: #e63946;
+  font-weight: bold;
+}
