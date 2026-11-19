@@ -1,13 +1,24 @@
 interface SearchBoxProps {
   value: string;
   onChange: (value: string) => void;
+  onSearch: (value: string) => void;
 }
 
-function SearchBox({value, onChange}: SearchBoxProps) {
+function SearchBox({value, onChange, onSearch}: SearchBoxProps) {
+
+    function handleSubmit() {
+        console.log("Submitting:", value)
+        onSearch(value.trim())
+    }
+
+    function handleClear() {
+        onChange("")
+    }
+
     return(
         <>
             <label htmlFor="search-id">
-                Search for books
+                Find a Pokémon by name or number
             </label>
             <input 
             id="search-id"
@@ -17,7 +28,8 @@ function SearchBox({value, onChange}: SearchBoxProps) {
             onChange={(event)=>onChange(event.target.value)}
             >
             </input>
-            {value.length >0 && (<button type="button" onClick={() => onChange("")}>Clear</button>)}
+            <button type="button" onClick={handleSubmit}>Find</button>
+            {value.length >0 && (<button type="button" onClick={handleClear}>Clear</button>)}
         </>
     )
 }

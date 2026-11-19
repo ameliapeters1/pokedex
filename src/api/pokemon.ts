@@ -26,7 +26,7 @@ export const getPokemonList = async (
   signal?: AbortSignal,
 ): Promise<{ pokemon: PokemonListItem[]; total: number }> => {
     if (!query.type){
-        const data: listResponse = await apiGet("/pokemon?limit=20", signal)
+        const data: listResponse = await apiGet("/pokemon/", signal)
         const pokemon = (data.results.map((pokemon: PokemonListItem) => (
         { ...pokemon, id: idFromUrl(pokemon.url)})))
         const total = data.count
@@ -45,8 +45,6 @@ export const getPokemonList = async (
         }
     }
 };
-
-
 
 
 export const getPokemon = (
