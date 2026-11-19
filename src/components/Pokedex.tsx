@@ -3,6 +3,7 @@ import { usePokemonList } from "../hooks/usePokemonLists"
 import PokemonGrid from "./PokemonGrid"
 import ResultCount from "./ResultCount"
 import TypeSelect from "./TypeSelect"
+import SearchBox from "./SearchBox"
 
 
 function Pokedex(){
@@ -13,7 +14,14 @@ function Pokedex(){
     return (
     <main className="page">
         <h1>Pokemons!</h1>
-        <TypeSelect value={type} onChange={setType}/>
+        <div className="search-controls">
+            <TypeSelect value={type} onChange={setType} />
+
+            <SearchBox
+                value={"hello"}
+                onChange={()=>{}}
+            />
+        </div>
 
         {isLoading ? (<p>loading Pokemon...</p>): 
             error ? (<p>{error}</p>):
