@@ -7,7 +7,6 @@ interface SearchBoxProps {
 function SearchBox({value, onChange, onSearch}: SearchBoxProps) {
 
     function handleSubmit() {
-        console.log("Submitting:", value)
         onSearch(value.trim())
     }
 

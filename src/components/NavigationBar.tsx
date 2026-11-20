@@ -14,6 +14,12 @@ function NavigationBar(){
             className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
                 Pokedex    
             </NavLink>
+
+            <NavLink 
+            to="/register" 
+            className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+                Register    
+            </NavLink>
         </nav>
     )
     
